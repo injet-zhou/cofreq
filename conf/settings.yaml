@@ -1,0 +1,3 @@
+api_key:
+  groq: 'your_groq_api_key'
+  cohere: 'your_cohere_api_key'
