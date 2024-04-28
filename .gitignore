@@ -162,3 +162,4 @@ cython_debug/
 # Ignore dynaconf secret files
 .secrets.*
 settings.*.yaml
+.ruff_cache
