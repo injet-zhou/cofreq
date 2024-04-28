@@ -1,8 +1,6 @@
 import cohere
 from typing import Annotated
-import inspect
 from fastapi import APIRouter, Header, HTTPException
-from rich import print
 from sse_starlette import EventSourceResponse
 from cofreq.models.chat import (
     ChatCompletions,
@@ -16,7 +14,11 @@ from cofreq.models.chat import (
 )
 from cohere.types.chat_message import ChatMessage
 from cohere.types.non_streamed_chat_response import NonStreamedChatResponse
-from cohere.types.streamed_chat_response import StreamedChatResponse_StreamStart, StreamedChatResponse_TextGeneration, StreamedChatResponse_StreamEnd
+from cohere.types.streamed_chat_response import (
+    StreamedChatResponse_StreamStart,
+    StreamedChatResponse_TextGeneration,
+    StreamedChatResponse_StreamEnd,
+)
 
 cohere_router = APIRouter(
     prefix="/cohere",
@@ -82,8 +84,9 @@ def cohere_chat(chat: ChatCompletions, authorization: str):
             usage=Usage(
                 prompt_tokens=rsp.meta.tokens.input_tokens,
                 completion_tokens=rsp.meta.tokens.output_tokens,
-                total_tokens=rsp.meta.tokens.input_tokens + rsp.meta.tokens.output_tokens,
-            )
+                total_tokens=rsp.meta.tokens.input_tokens
+                + rsp.meta.tokens.output_tokens,
+            ),
         )
     return response
 
@@ -97,13 +100,15 @@ def cohere_stream_chat(chat: ChatCompletions, authorization: str):
             continue
         if isinstance(chunk, StreamedChatResponse_TextGeneration):
             yield ChatCompletionChunkResponse(
-                id='',
+                id="",
                 object="chat.completion.chunk",
                 model=chat.model,
                 choices=[
                     ChatCompletionChunkChoice(
                         index=0,
-                        delta=ChatCompletionChunkDelta(role="assistant", content=chunk.text),
+                        delta=ChatCompletionChunkDelta(
+                            role="assistant", content=chunk.text
+                        ),
                         logprobs=None,
                         finish_reason="incomplete",
                     ),
@@ -123,7 +128,6 @@ def cohere_stream_chat(chat: ChatCompletions, authorization: str):
                     ),
                 ],
             ).model_dump_json()
-        
 
 
 @cohere_router.post("/chat/completions")
@@ -138,6 +142,5 @@ async def chat_completions(
     if not chat.stream:
         rsp = cohere_chat(chat, authorization)
         return rsp
-    
+
     return EventSourceResponse(cohere_stream_chat(chat, authorization))
-    
