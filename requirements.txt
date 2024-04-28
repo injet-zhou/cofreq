@@ -1,0 +1,9 @@
+cohere
+dynaconf
+fastapi
+groq
+pre-commit
+pydantic
+ruff
+sse-starlette
+uvicorn
