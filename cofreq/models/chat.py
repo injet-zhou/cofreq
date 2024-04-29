@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from typing import Any, List,Optional
+from typing import Any, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 class Message(BaseModel):
     role: str
     content: str
-    tool_call_id: Optional[str] = None
+    # tool_call_id: Optional[str] = None
 
 
 class Function(BaseModel):
@@ -55,11 +55,12 @@ class ChatCompletions(BaseModel):
     presence_penalty: Optional[float] = None
     user: Optional[str] = None
     seed: Optional[int] = None
-    tool_choice: Optional[ToolChoice] = None
+    # tool_choice: Optional[ToolChoice] = None
     top_p: Optional[float] = None
     max_tokens: Optional[int] = None
     temperature: Optional[float] = None
     stop: Optional[str] = None
+
 
 class Choice(BaseModel):
     index: int
@@ -67,10 +68,12 @@ class Choice(BaseModel):
     logprobs: Any
     finish_reason: str
 
+
 class Usage(BaseModel):
     prompt_tokens: int
     completion_tokens: int
     total_tokens: int
+
 
 class ChatCompletionResponse(BaseModel):
     id: str
