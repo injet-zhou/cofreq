@@ -1,5 +1,14 @@
-import cohere
 from typing import Annotated
+import time
+import cohere
+from cofreq.models.model import ModelsResponse, Datum
+from cohere.types.chat_message import ChatMessage
+from cohere.types.non_streamed_chat_response import NonStreamedChatResponse
+from cohere.types.streamed_chat_response import (
+    StreamedChatResponse_StreamStart,
+    StreamedChatResponse_TextGeneration,
+    StreamedChatResponse_StreamEnd,
+)
 from fastapi import APIRouter, Header, HTTPException
 from sse_starlette import EventSourceResponse
 from cofreq.models.chat import (
@@ -12,13 +21,9 @@ from cofreq.models.chat import (
     Message,
     Usage,
 )
-from cohere.types.chat_message import ChatMessage
-from cohere.types.non_streamed_chat_response import NonStreamedChatResponse
-from cohere.types.streamed_chat_response import (
-    StreamedChatResponse_StreamStart,
-    StreamedChatResponse_TextGeneration,
-    StreamedChatResponse_StreamEnd,
-)
+
+
+supported_models = ["command-r-plus"]
 
 cohere_router = APIRouter(
     prefix="/cohere",
@@ -39,7 +44,18 @@ cohere_role_map = {
 
 @cohere_router.get("/models")
 async def get_models():
-    return ["command-r-plus"]
+    return ModelsResponse(
+        object="list",
+        data=[
+            Datum(
+                id=model,
+                object="model",
+                created=int(time.time()),
+                owned_by="cohere",
+            )
+            for model in supported_models
+        ],
+    )
 
 
 def to_chat_params(chat: ChatCompletions):
