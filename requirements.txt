@@ -7,3 +7,5 @@ pydantic
 ruff
 sse-starlette
 uvicorn
+rich
+zhipuai

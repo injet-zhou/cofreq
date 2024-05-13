@@ -50,7 +50,7 @@ async def chat_completions(
     authorization: Annotated[str | None, Header()],
 ):
     client = Groq(
-        api_key=authorization.strip("Bearer "),
+        api_key=authorization.removeprefix("Bearer "),
     )
     chat_params = chat.model_dump()
     # remove unsupported fields
@@ -62,4 +62,8 @@ async def chat_completions(
     if not chat.stream:
         return chat_completion
 
-    return EventSourceResponse(chat_completion)
+    def chat_stream():
+        for response in chat_completion:
+            yield response.model_dump_json()
+
+    return EventSourceResponse(chat_stream())

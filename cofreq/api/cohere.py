@@ -82,7 +82,7 @@ def to_chat_params(chat: ChatCompletions):
 
 def cohere_chat(chat: ChatCompletions, authorization: str):
     chat_params = to_chat_params(chat)
-    co = new_cohere(authorization.strip("Bearer "))
+    co = new_cohere(authorization.removeprefix("Bearer "))
     if not chat.stream:
         rsp: NonStreamedChatResponse = co.chat(**chat_params)
         response = ChatCompletionResponse(
