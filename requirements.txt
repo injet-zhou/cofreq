@@ -9,3 +9,4 @@ sse-starlette
 uvicorn
 rich
 zhipuai
+openai
