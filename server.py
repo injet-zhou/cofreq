@@ -10,6 +10,6 @@ app.add_middleware(AuthMiddleware)
 
 app.include_router(api_router)
 
+
 def start_server():
     uvicorn.run(app, host=arg.host, port=arg.port, log_level=arg.log_level)
-    

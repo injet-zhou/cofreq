@@ -42,10 +42,7 @@ qwen_unspported_fields = [
     "top_logprobs",
     "functions",
     "function_call",
-    "frequency_penalty",
     "response_format",
-    "n",
-    "presence_penalty",
     "user",
 ]
 
@@ -76,7 +73,7 @@ async def chat_completions(
         api_key=api_key,
         base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
     )
-    chat_params = chat.model_dump()
+    chat_params = chat.model_dump(exclude_none=True)
     # remove unsupported fields
     for field in qwen_unspported_fields:
         chat_params.pop(field, None)
